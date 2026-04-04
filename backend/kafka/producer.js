@@ -17,7 +17,7 @@ export const publishJob = async (topic, payload) => {
 
   if (topic === 'pdf.compress') {
     if (!payload.file) {
-      throw new Error(`[KAFKA] Missing 'file' field in payload for job ${payload.jobId}`);
+      throw new Error(`KAFKA Missing 'file' field in payload for job ${payload.jobId}`);
     }
   }
 
@@ -29,7 +29,7 @@ export const publishJob = async (topic, payload) => {
         payload.file = absolutePath;
       }
     } catch (err) {
-      console.error(`[KAFKA] Error resolving path for ${payload.file}:`, err.message);
+      console.error(`KAFKA Error resolving path for ${payload.file}:`, err.message);
     }
   }
 
@@ -39,7 +39,7 @@ export const publishJob = async (topic, payload) => {
       messages: [{ value: JSON.stringify(payload) }]
     });
   } catch (err) {
-    console.error(`[KAFKA] Failed to send message:`, err);
+    console.error(`KAFKA Failed to send message:`, err);
     throw err;
   }
 };

@@ -7,7 +7,6 @@ const uploadDir = path.resolve(process.cwd(), 'uploads');
 
 export const processRotate = async (payload) => {
   try {
-    console.log('=== ROTATE WORKER STARTED ===', payload);
     let { jobId, fileName, file, degrees: deg, pages } = payload;
     
     let inputPath = null;
@@ -33,8 +32,6 @@ export const processRotate = async (payload) => {
       }
       inputPath = path.join(uploadDir, matchedFile);
     }
-    
-    console.log(`Input file found: ${inputPath}`);
     await Job.updateOne({ jobId }, { status: 'processing' });
 
     const bytes = fs.readFileSync(inputPath);
@@ -57,8 +54,6 @@ export const processRotate = async (payload) => {
       outputFile: outputPath,
       downloadUrl: `/api/pdf/download/${jobId}`
     });
-    
-    console.log(`Rotate job ${jobId} completed!`);
   } catch (error) {
     console.error(`Error in processRotate:`, error);
     await Job.updateOne({ jobId: payload.jobId }, { status: 'failed', error: error.message });

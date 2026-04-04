@@ -16,9 +16,6 @@ export const processSplit = async ({ jobId, file }) => {
     let inputPath = path.resolve(file);
 
     if (!fs.existsSync(inputPath)) {
-      console.warn(
-        `File not found at ${inputPath}. Searching in ${uploadDir}...`,
-      );
       const availableFiles = fs.readdirSync(uploadDir);                                                                                                                                             
       let matchedFile = availableFiles.find((f) => f.includes(jobId));
       if (!matchedFile) {
@@ -71,9 +68,6 @@ export const processSplit = async ({ jobId, file }) => {
       const archive = archiver("zip", { zlib: { level: 9 } });
 
       output.on("close", () => {
-        console.log(
-          `ZIP created at ${zipPath}, size: ${archive.pointer()} bytes`,
-        );
         resolve();
       });
       output.on("error", reject);
@@ -101,7 +95,6 @@ export const processSplit = async ({ jobId, file }) => {
       },
     );
 
-    console.log(`Split Job ${jobId} completed successfully.`);
   } catch (error) {
     console.error(`Split Error for job ${jobId}:`, error);
     await Job.updateOne({ jobId }, { status: "failed", error: error.message });
