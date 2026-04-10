@@ -33,6 +33,7 @@ router.post('/compress', upload.single('file'), (req, res, next) => {
   if (!req.file) return res.status(400).json({ error: 'No file' });
   next();
 }, pdfController.compressPDF);
+router.post('/edit', upload.single('file'), pdfController.editPDF);
 router.get('/job/:jobId', pdfController.getJobStatus);
 router.get('/download/:jobId', pdfController.downloadFile);
 

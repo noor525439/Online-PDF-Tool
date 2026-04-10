@@ -3,7 +3,7 @@ import { processMerge } from '../workers/merge.worker.js';
 import { processSplit } from '../workers/split.worker.js';
 import { processCompress } from '../workers/compress.worker.js';
 import { processRotate } from '../workers/rotate.worker.js';
-
+import { processEdit } from '../workers/edit.worker.js';
 const kafka = new Kafka({
   clientId: 'pdf-tool-backend',
   brokers: [process.env.KAFKA_BROKERS || 'kafka:29092']   
@@ -15,6 +15,7 @@ export const connectConsumer = async () => {
     'pdf.split': processSplit,
     'pdf.compress': processCompress,
     'pdf.rotate': processRotate,
+    'pdf.edit': processEdit,
   };
 
   for (const [topic, handler] of Object.entries(topicsMap)) {

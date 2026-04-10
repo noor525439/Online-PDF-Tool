@@ -107,6 +107,39 @@ export const rotatePDF = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const editPDF = async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: "File missing" });
+
+    const jobId = uuidv4();
+    const absolutePath = path.resolve(req.file.path);
+    
+    const { editType, options } = req.body; 
+    const parsedOptions = options ? JSON.parse(options) : {};
+
+    await Job.create({
+      jobId,
+      type: "edit",
+      inputFiles: [absolutePath],
+      status: "pending",
+      metadata: parsedOptions
+    });
+
+    await publishJob("pdf.edit", {
+      jobId,
+      file: absolutePath,
+      editType,
+      options: parsedOptions,
+    });
+
+    res.json({ jobId });
+  } catch (error) {
+    console.error("Controller Error:", error);
+    res.status(500).json({ error: error.message });
+  }
+}
+
 export const getJobStatus = async (req, res) => {
   try {
     const { jobId } = req.params;
@@ -163,3 +196,4 @@ export const downloadFile = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
